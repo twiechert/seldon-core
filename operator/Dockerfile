@@ -29,7 +29,7 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
 #FROM gcr.io/distroless/base:latest
-FROM discolix/static:latest-linux_arm64
+FROM discolix/static:144553d6dc45f0795b8ffa22e3c94ab9f83d412b
 
 
 WORKDIR /
