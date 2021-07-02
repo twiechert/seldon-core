@@ -129,7 +129,7 @@ manifests: controller-gen
 # Solution may be to drop v1alpha2 and v1alpha3 versions to decrease size by 2/3
 manifests_v1: controller-gen
 	$(CONTROLLER_GEN) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd_v1/bases crd:crdVersions=v1
-	#$(CONTROLLER_GEN) rbac:roleName=manager-role webhook paths="./apis/machinelearning.seldon.io/v1" output:crd:artifacts:config=config/crd_v1/bases crd:crdVersions=v1
+	#$(CONTROLLER_GEN) rbac:roleName=manager-role webhook kustomize build config/default/ -paths="./apis/machinelearning.seldon.io/v1" output:crd:artifacts:config=config/crd_v1/bases crd:crdVersions=v1
 
 # Run go fmt against code
 fmt:
@@ -151,6 +151,15 @@ create-client: test
 docker-build: test generate-resources
 	docker build . -t ${IMG}
 
+# Build the docker image
+docker-build-arm: test generate-resources
+    docker buildx build \
+            --build-arg GOARCH=arm64 \
+            --build-arg GOARM=8 \
+            --platform linux/arm/v8,linux/arm64 \
+            --tag ${IMG}-arm \
+            --file ./Dockerfile \
+            --output "type=image" .
 
 
 # Push the docker image
@@ -245,7 +254,7 @@ config/crd_v1/patches/graph_children.yaml:
 
 #
 # Testing with operstor-sdk 1.0.1
-#
+#controller-gen
 
 .PHONY: bundle
 recreate_bundle:
