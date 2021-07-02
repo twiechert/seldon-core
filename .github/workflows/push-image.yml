@@ -19,7 +19,11 @@ jobs:
 
         - name: Login to GitHub Package Registry
           run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
-        - name: Run Buildx (push image)
+        - name: Run docker-build-arm-32 Buildx (push image)
           if: success()
           run: >-
-            cd operator && make docker-build-arm
+            cd operator && make docker-build-arm-32
+        - name: Run docker-build-arm-64 Buildx (push image)
+          if: success()
+          run: >-
+            cd operator && make docker-build-arm-64
