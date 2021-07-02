@@ -155,7 +155,6 @@ docker-build: test generate-resources
 docker-build-arm-64: test generate-resources
 	docker buildx build \
 			--build-arg GOARCH=arm64 \
-			--build-arg GOARM=8 \
 			--platform linux/arm64/v8 \
 			--tag ${IMG}-arm64 \
 			--file ./Dockerfile \
@@ -166,7 +165,6 @@ docker-build-arm-64: test generate-resources
 docker-build-arm-32: test generate-resources
 	docker buildx build \
 			--build-arg GOARCH=arm \
-			--build-arg GOARM=8 \
 			--platform linux/arm/v8 \
 			--tag ${IMG}-arm32 \
 			--file ./Dockerfile \

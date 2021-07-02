@@ -1,7 +1,6 @@
 # Build the manager binary
 FROM arm64v8/golang:1.14.9 as builder
 ARG GOARCH=amd64
-ARG GOARM=8
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
@@ -19,7 +18,7 @@ COPY constants/ constants/
 COPY client/ client/
 
 # Build
-RUN env GOOS=linux GOARCH=$GOARCH GOARM=$GOARM  go build -a -o manager main.go
+RUN env GOOS=linux GOARCH=$GOARCH go build -a -o manager main.go
 
 # Get MPL licensed dependencies
 RUN wget -O hashicorp-golang-lru.tar.gz https://github.com/hashicorp/golang-lru/archive/master.tar.gz
