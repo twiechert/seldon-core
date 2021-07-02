@@ -6,7 +6,7 @@ on:
       - feature/v1.9.1-arm
 jobs:
 
-  build-arm:
+  build-arm-64:
       runs-on: ubuntu-18.04
       container: seldonio/core-builder:0.20
       steps:
@@ -19,11 +19,26 @@ jobs:
 
         - name: Login to GitHub Package Registry
           run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
-        - name: Run docker-build-arm-32 Buildx (push image)
-          if: success()
-          run: >-
-            cd operator && make docker-build-arm-32
         - name: Run docker-build-arm-64 Buildx (push image)
           if: success()
           run: >-
             cd operator && make docker-build-arm-64
+
+
+  build-arm-32:
+    runs-on: ubuntu-18.04
+    container: seldonio/core-builder:0.20
+    steps:
+
+      - id: repo-lowercase
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+      - uses: actions/checkout@v2
+
+      - name: Login to GitHub Package Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
+      - name: Run docker-build-arm-32 Buildx (push image)
+        if: success()
+        run: >-
+          cd operator && make docker-build-arm-32
