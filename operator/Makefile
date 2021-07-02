@@ -156,7 +156,7 @@ docker-build-arm-64: test generate-resources
 	docker buildx build \
 			--build-arg GOARCH=arm64 \
 			--build-arg GOARM=8 \
-			--platform linux/arm64 \
+			--platform linux/arm64/v8 \
 			--tag ${IMG}-arm64 \
 			--file ./Dockerfile \
 			--output "type=image,push=true" .
