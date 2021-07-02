@@ -163,7 +163,7 @@ docker-build-arm-64: test generate-resources
 
 
 # Build the docker image
-docker-build-arm-32:
+docker-build-arm-32: test generate-resources
 	docker buildx build \
 			--build-arg GOARCH=arm \
 			--build-arg GOARM=8 \
