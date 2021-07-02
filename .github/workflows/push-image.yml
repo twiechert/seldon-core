@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/v1.9.1-arm v1.9.1
+      - feature/v1.9.1-arm
 jobs:
 
   build-arm:
