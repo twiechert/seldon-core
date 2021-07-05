@@ -6,26 +6,46 @@ on:
       - feature/v1.9.1-arm
 jobs:
 
-  build-arm:
+  build-dep:
       runs-on: ubuntu-18.04
       container: ghcr.io/twiechert/seldon-core/seldon-core-builder:1.0
       steps:
 
-        - id: repo-lowercase
-          uses: ASzc/change-string-case-action@v1
-          with:
-            string: ${{ github.repository }}
-        - uses: actions/checkout@v2
-
-        - name: Login to GitHub Package Registry
-          run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
-        - name: Run docker-build-arm-64 Buildx (push image)
-          if: success()
+        - name: Generate resources
           run: >-
-            cd operator && make docker-build-arm-64 IMG=ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}
+            cd operator && make generate-resources
 
-#        - name: Login to GitHub Package Registry
-#          run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
-#        - name: Run docker-build-arm-32 Buildx (push image)
-#          run: >-
-#            cd operator && make docker-build-arm-32F
+        - name: 'Upload Artifact'
+          uses: actions/upload-artifact@v2
+          with:
+            name: generated
+            path: operator/generated/**/*
+
+
+  build-arm:
+    runs-on: ubuntu-latest
+    steps:
+
+      - id: repo-lowercase
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: generated
+      - name: Login to GitHub Package Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
+      - name: Run Buildx (push image)
+        if: success()
+        run: >-
+          docker buildx build
+          --platform linux/arm64
+          --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}:1.0
+          --file ./Dockerfile
+          --output "type=image,push=true" ./operator
