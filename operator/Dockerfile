@@ -1,6 +1,6 @@
 # Build the manager binary
 FROM arm64v8/golang:1.14.9 as builder
-ARG GOARCH=amd64
+ARG GOARCH=arm64
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
