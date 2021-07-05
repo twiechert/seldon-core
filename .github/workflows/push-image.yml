@@ -10,7 +10,7 @@ jobs:
       runs-on: ubuntu-18.04
       container: ghcr.io/twiechert/seldon-core/seldon-core-builder:1.0
       steps:
-
+        - uses: actions/checkout@v2
         - name: Generate resources
           run: >-
             cd operator && make generate-resources
