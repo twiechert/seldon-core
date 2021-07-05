@@ -16,9 +16,11 @@ COPY controllers/ controllers/
 COPY utils/ utils/
 COPY constants/ constants/
 COPY client/ client/
+RUN  apt-get update -y && apt-get install -y gcc-arm-linux-gnueabihf
+RUN ln -s /lib/ld-linux.so.3 /lib-linux-armhf.so.3
 
 # Build
-RUN env GOOS=linux GOARCH=$GOARCH go build -a -o manager main.go
+RUN env CGO_ENABLED=0 GOOS=linux GOARCH=$GOARCH go build -a -o manager main.go
 
 # Get MPL licensed dependencies
 RUN wget -O hashicorp-golang-lru.tar.gz https://github.com/hashicorp/golang-lru/archive/master.tar.gz
