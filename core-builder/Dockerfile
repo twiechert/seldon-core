@@ -12,6 +12,7 @@ RUN \
          ca-certificates \
          curl \
          qemu-user-static \
+         qemu  \
          binfmt-support  \
          wget \
          gnupg2 \
@@ -23,9 +24,9 @@ RUN \
        stable" && \
     apt-get update && \
     apt-get install -y docker-ce
-RUN mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+#RUN mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
 RUN bash service docker start
-RUN ./check-qemu-binfmt.sh
+#RUN ./check-qemu-binfmt.sh
 
 
 # Installing source to image (s2i)
