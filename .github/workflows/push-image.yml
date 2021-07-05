@@ -30,11 +30,17 @@ jobs:
         run: >-
           cd executor && make copy_openapi_resources copy_operator
 
-      - name: 'Upload Artifact'
+      - name: 'Upload executor artifacts'
         uses: actions/upload-artifact@v2
         with:
           name: generated-executor
           path: executor/api/**/*
+
+      - name: 'Upload executor artifacts II'
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated-executor_operator
+          path: executor/_operator/**/*
 
   build-operator-arm:
     needs: build-operator-dep
@@ -82,11 +88,17 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
         with:
           version: latest
-      - name: Download a single artifact
+      - name: Download executor api artifacts
         uses: actions/download-artifact@v2
         with:
           name: generated-executor
           path: /home/runner/work/seldon-core/seldon-core/executor/api/
+
+      - name: Download operator artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: generated-executor_operator
+          path: /home/runner/work/seldon-core/seldon-core/executor/_operator/
 
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
