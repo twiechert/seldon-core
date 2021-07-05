@@ -1,0 +1,29 @@
+name: Publish builder image
+on:
+  push:
+    push:
+      - 'core-builder/**'
+    branches:
+      - main
+      - feature/v1.9.1-arm
+jobs:
+
+  build-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - id: repo-lowercase
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Package Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
+      - name: Copy dockerfile
+        run: cp ./testing/scripts/dev_requirements.txt ./core-builder/
+      - name: Build the Docker image
+        run: docker build -t ${{ github.event.repository.name }}-builder:latest ./core-builder
+      - name: Tag the Docker image
+        run: docker tag ${{ github.event.repository.name }}-builder:latest ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}-builder:1.0
+      - name: Push the Docker image to the registry
+        run: docker push ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}-builder:1.0
+
