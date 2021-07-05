@@ -23,7 +23,7 @@ jobs:
 
 
   build-arm:
-    build: build-dep
+    needs: build-dep
     runs-on: ubuntu-latest
     steps:
 
