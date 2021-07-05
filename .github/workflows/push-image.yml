@@ -42,7 +42,7 @@ jobs:
           name: generated
       - name: Generate resources
         run: >-
-          mv /home/runner/work/seldon-core/seldon-core/ ./operator/generated/
+          ls /home/runner/work/seldon-core/seldon-core/.  && mkdir -p ./operator/generated/ && cp -r /home/runner/work/seldon-core/seldon-core/. ./operator/generated
 
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
