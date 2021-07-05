@@ -40,6 +40,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: generated
+      - name: Generate resources
+        run: >-
+          mv /home/runner/work/seldon-core/seldon-core/ ./operator/generated/
+
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
       - name: Run Buildx (push image)
