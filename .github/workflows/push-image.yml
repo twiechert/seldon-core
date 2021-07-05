@@ -17,7 +17,7 @@ jobs:
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
       - name: Copy dockerfile
-        run: cp ./testing/scripts/dev_requirements.txt .
+        run: cp ./testing/scripts/dev_requirements.txt ./core-builder/
       - name: Build the Docker image
         run: docker build -t ${{ github.event.repository.name }}-builder:latest ./core-builder
       - name: Tag the Docker image
