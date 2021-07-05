@@ -9,6 +9,7 @@ RUN \
          apt-transport-https \
          ca-certificates \
          curl \
+         qemu qemu-kvm  \
          wget \
          gnupg2 \
          software-properties-common && \
