@@ -23,7 +23,7 @@ RUN \
        stable" && \
     apt-get update && \
     apt-get install -y docker-ce
-RUN mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc'
+RUN mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
 RUN bash service docker start
 RUN ./check-qemu-binfmt.sh
 
