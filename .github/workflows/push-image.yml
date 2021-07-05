@@ -48,7 +48,7 @@ jobs:
         if: success()
         run: >-
           docker buildx build
-          --platform linux/arm64
-          --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}:1.0
+          --platform linux/arm64/v8
+          --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}:1.0.0
           --file ./operator/Dockerfile
           --output "type=image,push=true" ./operator
