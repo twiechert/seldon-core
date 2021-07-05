@@ -24,7 +24,9 @@ RUN \
     apt-get update && \
     apt-get install -y docker-ce
 
+RUN bash service docker start
 RUN ./check-qemu-binfmt.sh
+
 
 # Installing source to image (s2i)
 RUN wget https://github.com/openshift/source-to-image/releases/download/v1.1.14/source-to-image-v1.1.14-874754de-linux-386.tar.gz && \
