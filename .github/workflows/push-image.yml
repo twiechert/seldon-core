@@ -48,5 +48,5 @@ jobs:
           docker buildx build
           --platform linux/arm64
           --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}:1.0
-          --file ./Dockerfile
+          --file ./operator/Dockerfile
           --output "type=image,push=true" ./operator
