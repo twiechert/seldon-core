@@ -3,13 +3,16 @@ FROM openjdk:13.0.1-jdk-buster
 ENV PYTHON_VERSION "3.6.10"
 
 # install docker
+COPY check-qemu-binfmt.sh check-qemu-binfmt.sh
+RUN chmod +x check-qemu-binfmt.sh
 RUN \
     apt-get update && \
     apt-get install -y \
          apt-transport-https \
          ca-certificates \
          curl \
-         qemu qemu-kvm  \
+         qemu-user-static \
+         binfmt-support  \
          wget \
          gnupg2 \
          software-properties-common && \
@@ -20,6 +23,8 @@ RUN \
        stable" && \
     apt-get update && \
     apt-get install -y docker-ce
+
+RUN ./check-qemu-binfmt.sh
 
 # Installing source to image (s2i)
 RUN wget https://github.com/openshift/source-to-image/releases/download/v1.1.14/source-to-image-v1.1.14-874754de-linux-386.tar.gz && \
