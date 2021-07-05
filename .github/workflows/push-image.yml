@@ -6,7 +6,7 @@ on:
       - feature/v1.9.1-arm
 jobs:
 
-  build-dep:
+  build-operator-dep:
       runs-on: ubuntu-18.04
       container: ghcr.io/twiechert/seldon-core/seldon-core-builder:1.0
       steps:
@@ -18,12 +18,26 @@ jobs:
         - name: 'Upload Artifact'
           uses: actions/upload-artifact@v2
           with:
-            name: generated
+            name: generated-operator
             path: operator/generated/**/*
 
+  build-executor-dep:
+    runs-on: ubuntu-18.04
+    container: ghcr.io/twiechert/seldon-core/seldon-core-builder:1.0
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate resources
+        run: >-
+          cd executor && make copy_openapi_resources
 
-  build-arm:
-    needs: build-dep
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated-executor
+          path: executor/api/**/*
+
+  build-operator-arm:
+    needs: build-operator-dep
     runs-on: ubuntu-latest
     steps:
 
@@ -39,7 +53,7 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         with:
-          name: generated
+          name: generated-operator
           path: /home/runner/work/seldon-core/seldon-core/operator/generated/
 
       - name: Login to GitHub Package Registry
@@ -52,3 +66,35 @@ jobs:
           --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}:1.0.0
           --file ./operator/Dockerfile
           --output "type=image,push=true" ./operator
+
+
+  build-executor-arm:
+    needs: build-executor-dep
+    runs-on: ubuntu-latest
+    steps:
+
+      - id: repo-lowercase
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: generated-executor
+          path: /home/runner/work/seldon-core/seldon-core/executor/api/
+
+      - name: Login to GitHub Package Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin
+      - name: Run Buildx (push image)
+        if: success()
+        run: >-
+          docker buildx build
+          --platform linux/arm64/v8
+          --tag ghcr.io/${{ steps.repo-lowercase.outputs.lowercase }}/${{ github.event.repository.name }}-executor:1.0.0
+          --file ./executor/Dockerfile.executor
+          --output "type=image,push=true" ./executor

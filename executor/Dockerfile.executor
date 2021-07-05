@@ -1,5 +1,6 @@
 # Build the manager binary
-FROM golang:1.13 as builder
+FROM arm64v8/golang:1.14.9 as builder
+ARG GOARCH=arm64
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -18,8 +19,12 @@ COPY predictor/ predictor/
 COPY logger/ logger/
 COPY k8s/ k8s/
 
+RUN  apt-get update -y && apt-get install -y gcc-arm-linux-gnueabihf
+RUN ln -s /lib/ld-linux.so.3 /lib-linux-armhf.so.3
+
+
 # Build
-RUN go build -a -o executor cmd/executor/main.go
+RUN env CGO_ENABLED=0 GOOS=linux GOARCH=$GOARCH  go build -a -o executor cmd/executor/main.go
 
 # Get MPL licensed dependencies
 RUN wget -O hashicorp-golang-lru.tar.gz https://github.com/hashicorp/golang-lru/archive/master.tar.gz
@@ -32,7 +37,7 @@ RUN chmod -R 660 /openapi/
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/base:latest
+FROM discolix/static:144553d6dc45f0795b8ffa22e3c94ab9f83d412b
 WORKDIR /
 COPY --from=builder /workspace/executor .
 COPY licenses/license.txt licenses/license.txt
