@@ -30,17 +30,22 @@ jobs:
         run: >-
           cd executor && make copy_openapi_resources copy_operator
 
+      - name: Run Buildx (push image)
+        if: success()
+        run: >-
+          docker run -it --rm \
+          -v /Users/t.wiechert/IdeaProjects/seldon-core:/go/src/github.com/seldon-core \
+          -w /go/src/github.com/seldon-core/executor  \
+          -e CGO_ENABLED=1 \
+          docker.elastic.co/beats-dev/golang-crossbuild:1.15.10-arm  \
+          --build-cmd "apt-get update -y && apt-get install -y pkg-config && make executor" \
+          -p "linux/arm64"
+
       - name: 'Upload executor artifacts'
         uses: actions/upload-artifact@v2
         with:
           name: generated-executor
-          path: executor/api/**/*
-
-      - name: 'Upload executor artifacts II'
-        uses: actions/upload-artifact@v2
-        with:
-          name: generated-executor_operator
-          path: executor/_operator/**/*
+          path: executor/executor
 
   build-operator-arm:
     needs: build-operator-dep
@@ -92,13 +97,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: generated-executor
-          path: /home/runner/work/seldon-core/seldon-core/executor/api/
+          path: /home/runner/work/seldon-core/seldon-core/executor/executor
 
-      - name: Download operator artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: generated-executor_operator
-          path: /home/runner/work/seldon-core/seldon-core/executor/_operator/
 
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin

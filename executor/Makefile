@@ -27,8 +27,15 @@ vet:
 
 
 # Build manager binary
-executor: copy_operator fmt vet
-	go build -o executor cmd/executor/main.go
+librd:
+	rm -rf librdkafka
+	git clone https://github.com/edenhill/librdkafka.git
+	cd librdkafka &&./configure --prefix /usr && make && make install
+
+# Build manager binary
+executor: copy_operator librd fmt
+	go build -tags dynamic -o executor cmd/executor/main.go
+	chmod +x executor
 
 
 kafka-proxy: copy_operator fmt vet

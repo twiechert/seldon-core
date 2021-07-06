@@ -1,30 +1,8 @@
-# Build the manager binary
 FROM arm64v8/golang:1.14.9 as builder
 ARG GOARCH=arm64
 
 WORKDIR /workspace
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-COPY proto/ proto/
-# cache deps before building and copying source so that we don't need to re-download as much
-# and so that source changes don't invalidate our downloaded layer
-COPY _operator/ _operator/
-RUN go mod download
 
-# Copy the go source
-COPY cmd/ cmd/
-COPY api/ api/
-COPY predictor/ predictor/
-COPY logger/ logger/
-COPY k8s/ k8s/
-
-RUN  apt-get update -y && apt-get install -y gcc-arm-linux-gnueabihf
-RUN ln -s /lib/ld-linux.so.3 /lib-linux-armhf.so.3
-
-
-# Build
-RUN env CGO_ENABLED=0 GOOS=linux GOARCH=$GOARCH  go build -a -o executor cmd/executor/main.go
 
 # Get MPL licensed dependencies
 RUN wget -O hashicorp-golang-lru.tar.gz https://github.com/hashicorp/golang-lru/archive/master.tar.gz
@@ -35,12 +13,10 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
 FROM discolix/static:144553d6dc45f0795b8ffa22e3c94ab9f83d412b
 WORKDIR /
-COPY --from=builder /workspace/executor .
 COPY licenses/license.txt licenses/license.txt
+COPY executor executor
 COPY --from=builder /workspace/hashicorp-golang-lru.tar.gz licenses/mpl_source/hashicorp-golang-lru.tar.gz
 COPY --from=builder /workspace/armon-consul-api.tar.gz licenses/mpl_source/armon-consul-api.tar.gz
 COPY --from=builder /workspace/hasicorp-hcl.tar.gz licenses/mpl_source/hasicorp-hcl.tar.gz
