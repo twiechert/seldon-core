@@ -30,11 +30,11 @@ jobs:
         run: >-
           cd executor && make copy_openapi_resources copy_operator
 
-      - name: Run Buildx (push image)
+      - name: Build arm binary
         if: success()
         run: >-
-          docker run -it --rm \
-          -v /Users/t.wiechert/IdeaProjects/seldon-core:/go/src/github.com/seldon-core \
+          docker run --rm \
+          -v /go/src/github.com/seldon-core:/go/src/github.com/seldon-core \
           -w /go/src/github.com/seldon-core/executor  \
           -e CGO_ENABLED=1 \
           docker.elastic.co/beats-dev/golang-crossbuild:1.15.10-arm  \
