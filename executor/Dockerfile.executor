@@ -15,7 +15,7 @@ RUN chmod -R 660 /openapi/
 COPY executor executor
 RUN chmod +x executor
 
-FROM discolix/static:144553d6dcdod45f0795b8ffa22e3c94ab9f83d412b
+FROM discolix/static:latest-linux_arm64
 WORKDIR /
 
 COPY licenses/license.txt licenses/license.txt
