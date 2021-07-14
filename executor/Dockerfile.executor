@@ -19,7 +19,10 @@ WORKDIR /
 COPY licenses/license.txt licenses/license.txt
 
 COPY executor executor
+RUN whoami
+
 RUN chmod +x executor
+RUN ls -l /
 
 COPY --from=builder /workspace/hashicorp-golang-lru.tar.gz licenses/mpl_source/hashicorp-golang-lru.tar.gz
 COPY --from=builder /workspace/armon-consul-api.tar.gz licenses/mpl_source/armon-consul-api.tar.gz
