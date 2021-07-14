@@ -15,7 +15,8 @@ RUN chmod -R 660 /openapi/
 
 FROM arm64v8/alpine:3.11
 WORKDIR /
-RUN apk update && apk add libc-dev lld musl
+RUN apk update && apk add --arch aarch64 libc-dev lld musl
+RUN ls /lib
 
 COPY licenses/license.txt licenses/license.txt
 
