@@ -14,6 +14,7 @@ COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
 
 FROM discolix/static:latest-linux_arm64
+USER root
 WORKDIR /
 
 COPY licenses/license.txt licenses/license.txt
