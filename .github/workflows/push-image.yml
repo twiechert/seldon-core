@@ -39,7 +39,7 @@ jobs:
           -e CGO_ENABLED=1
           docker.elastic.co/beats-dev/golang-crossbuild:1.15.10-arm
           --build-cmd "apt-get update -y && apt-get install -y pkg-config && make executor"
-          -p "linux/arm64/v8"
+          -p "linux/arm64"
 
       - name: 'Upload executor artifacts'
         uses: actions/upload-artifact@v2
