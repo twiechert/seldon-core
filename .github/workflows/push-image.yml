@@ -103,6 +103,9 @@ jobs:
           name: generated-executor
           path: /home/runner/work/seldon-core/seldon-core/executor/executor
 
+      - name: make executor runnable
+        run: >-
+          chmod +x /home/runner/work/seldon-core/seldon-core/executor/executor
 
       - name: Login to GitHub Package Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository }} --password-stdin

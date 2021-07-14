@@ -12,15 +12,13 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 # Copy OpenAPI folder and change the permissions
 COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
-COPY executor executor
-RUN chmod +x executor
 
 FROM discolix/static:latest-linux_arm64
 WORKDIR /
 
 COPY licenses/license.txt licenses/license.txt
 
-COPY --from=builder /workspace/executor executor
+COPY executor executor
 
 COPY --from=builder /workspace/hashicorp-golang-lru.tar.gz licenses/mpl_source/hashicorp-golang-lru.tar.gz
 COPY --from=builder /workspace/armon-consul-api.tar.gz licenses/mpl_source/armon-consul-api.tar.gz
