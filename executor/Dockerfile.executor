@@ -17,7 +17,7 @@ RUN make librd
 RUN ls /usr/lib
 
 #FROM arm64v8/alpine:3.11
-FROM arm64v8/golang:1.14.9 as builder
+FROM arm64v8/golang:1.14.9
 
 WORKDIR /
 RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
