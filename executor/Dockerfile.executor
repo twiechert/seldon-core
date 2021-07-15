@@ -14,16 +14,14 @@ COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
 COPY Makefile Makefile
 RUN make librd
-RUN ls /
+RUN ls /usr/lib
 
 FROM arm64v8/alpine:3.11
 WORKDIR /
 RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
-RUN ls /usr/lib
 
-COPY Makefile Makefile
-RUN make librd
-RUN ls /lib
+COPY --from=builder /usr/lib/ /libs/
+RUN ls /libs/
 
 COPY licenses/license.txt licenses/license.txt
 
