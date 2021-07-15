@@ -13,7 +13,7 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
 COPY Makefile Makefile
-#RUN make librd
+RUN make librd
 RUN ls /usr/lib
 
 FROM arm64v8/alpine:3.11
