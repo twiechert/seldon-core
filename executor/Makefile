@@ -34,7 +34,7 @@ librd:
 
 # Build manager binary
 executor: copy_operator librd fmt
-	go build -tags dynamic -o executor cmd/executor/main.go
+	go build -tags static -ldflags='-extldflags=-static' -o executor cmd/executor/main.go
 	chmod +x executor
 
 
