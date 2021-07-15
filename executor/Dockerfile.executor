@@ -23,7 +23,7 @@ WORKDIR /
 RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
 
 COPY --from=builder /usr/lib/librdkafka++.a /usr/lib/librdkafka++.a
-COPY --from=builder /usr/lib/librdkafka++.so /usr/lib/ librdkafka++.so
+COPY --from=builder /usr/lib/librdkafka++.so /usr/lib/librdkafka++.so
 COPY --from=builder /usr/lib/librdkafka++.so.1 /usr/lib/librdkafka++.so.1
 COPY --from=builder /usr/lib/librdkafka.a /usr/lib/librdkafka.a
 COPY --from=builder /usr/lib/librdkafka.so /usr/lib/librdkafka.so
