@@ -13,23 +13,23 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
 COPY Makefile Makefile
-RUN make librd
+#RUN make librd
 RUN ls /usr/lib
 
-FROM arm64v8/alpine:3.11
-#FROM arm64v8/golang:1.14.9
+#FROM arm64v8/alpine:3.11
+FROM arm64v8/golang:1.14.9
 
 WORKDIR /
-RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
+#RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
 
-COPY --from=builder /usr/lib/librdkafka++.a /usr/lib/librdkafka++.a
-COPY --from=builder /usr/lib/librdkafka++.so /usr/lib/librdkafka++.so
-COPY --from=builder /usr/lib/librdkafka++.so.1 /usr/lib/librdkafka++.so.1
-COPY --from=builder /usr/lib/librdkafka.a /usr/lib/librdkafka.a
-COPY --from=builder /usr/lib/librdkafka.so /usr/lib/librdkafka.so
-COPY --from=builder /usr/lib/librdkafka.so.1 /usr/lib/librdkafka.so.1
+#COPY --from=builder /usr/lib/librdkafka++.a /usr/lib/librdkafka++.a
+#COPY --from=builder /usr/lib/librdkafka++.so /usr/lib/librdkafka++.so
+#COPY --from=builder /usr/lib/librdkafka++.so.1 /usr/lib/librdkafka++.so.1
+#COPY --from=builder /usr/lib/librdkafka.a /usr/lib/librdkafka.a
+#COPY --from=builder /usr/lib/librdkafka.so /usr/lib/librdkafka.so
+#COPY --from=builder /usr/lib/librdkafka.so.1 /usr/lib/librdkafka.so.1
 
-#RUN make librd
+RUN make librd
 
 
 COPY licenses/license.txt licenses/license.txt
