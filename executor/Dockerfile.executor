@@ -29,6 +29,7 @@ WORKDIR /
 #COPY --from=builder /usr/lib/librdkafka.so /usr/lib/librdkafka.so
 #COPY --from=builder /usr/lib/librdkafka.so.1 /usr/lib/librdkafka.so.1
 
+COPY Makefile Makefile
 RUN make librd
 
 
