@@ -12,12 +12,18 @@ RUN wget -O hasicorp-hcl.tar.gz https://github.com/hashicorp/hcl/archive/hcl1.ta
 # Copy OpenAPI folder and change the permissions
 COPY api/rest/openapi/ /openapi/
 RUN chmod -R 660 /openapi/
+COPY Makefile Makefile
+RUN make librd
+RUN ls /
 
 FROM arm64v8/alpine:3.11
 WORKDIR /
 RUN apk update && apk add --arch aarch64 libc-dev lld musl libc6-compat
-RUN ls /lib
+RUN ls /usr/lib
 
+COPY Makefile Makefile
+RUN make librd
+RUN ls /lib
 
 COPY licenses/license.txt licenses/license.txt
 
